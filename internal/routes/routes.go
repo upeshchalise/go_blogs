@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/upeshchalise/go_blogs/internal/controllers"
 )
 
 func InitRoutes() *gin.Engine {
@@ -12,6 +13,9 @@ func InitRoutes() *gin.Engine {
 			"message": "Hello World",
 		})
 	})
+
+	r.POST("/user", controllers.CreateUser)
+	r.GET("/user/:id", controllers.GetUser)
 
 	return r
 }
