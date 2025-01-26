@@ -14,7 +14,7 @@ var DB *gorm.DB
 func Init() {
 	var err error
 	dsn := viper.GetString("DATABASE_URL")
-	DB, err := gorm.Open("postgres", dsn)
+	DB, err = gorm.Open("postgres", dsn)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}

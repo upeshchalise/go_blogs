@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/upeshchalise/go_blogs/internal/database"
 	"github.com/upeshchalise/go_blogs/internal/models"
@@ -28,5 +30,10 @@ func (r *userRepository) GetById(id uuid.UUID) (*models.User, error) {
 }
 
 func (r *userRepository) Create(user *models.User) error {
+
+	if database.DB == nil {
+		return fmt.Errorf("database connection is not initialized")
+	}
+
 	return database.DB.Create(user).Error
 }
