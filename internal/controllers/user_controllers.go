@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/upeshchalise/go_blogs/internal/models"
 	"github.com/upeshchalise/go_blogs/internal/services"
+	passwords "github.com/upeshchalise/go_blogs/pkg/utils/password"
 )
 
 func GetUser(c *gin.Context) {
@@ -37,7 +38,12 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	user.Password = string(user.Password)
+	hashedPassword, err := passwords.HashPassword(string(user.Password))
+	if err != nil {
+		log.Println("error while hashing the password")
+	}
+
+	user.Password = hashedPassword
 
 	if err := services.GetUserService().Create(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
