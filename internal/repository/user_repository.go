@@ -6,11 +6,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/upeshchalise/go_blogs/internal/database"
 	"github.com/upeshchalise/go_blogs/internal/models"
+	passwords "github.com/upeshchalise/go_blogs/pkg/utils/password"
 )
 
 type UserRepository interface {
 	GetById(id uuid.UUID) (*models.User, error)
 	Create(user *models.User) error
+	Login(email string, password string) (*models.User, string, error)
 }
 
 type userRepository struct{}
@@ -36,4 +38,19 @@ func (r *userRepository) Create(user *models.User) error {
 	}
 
 	return database.DB.Create(user).Error
+}
+
+func (r *userRepository) Login(email string, password string) (*models.User, string, error) {
+
+	var user models.User
+
+	if err := database.DB.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, "", fmt.Errorf("user not found")
+	}
+
+	if !passwords.CompareHashPassword(password, user.Password) {
+		return nil, "", fmt.Errorf("password not match")
+	}
+	return &user, "success", nil
+
 }

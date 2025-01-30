@@ -9,6 +9,7 @@ import (
 type UserService interface {
 	GetById(id uuid.UUID) (*models.User, error)
 	Create(user *models.User) error
+	Login(email string, password string) (*models.User, string, error)
 }
 
 type userService struct {
@@ -27,4 +28,8 @@ func (s *userService) GetById(id uuid.UUID) (*models.User, error) {
 
 func (s *userService) Create(user *models.User) error {
 	return s.repo.Create(user)
+}
+
+func (s *userService) Login(email string, password string) (*models.User, string, error) {
+	return s.repo.Login(email, password)
 }

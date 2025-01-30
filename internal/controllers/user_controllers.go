@@ -52,3 +52,14 @@ func CreateUser(c *gin.Context) {
 	user.Password = ""
 	c.JSON(http.StatusOK, user)
 }
+
+func LoginUser(c *gin.Context, email string, password string) {
+
+	user, token, err := services.GetUserService().Login(email, password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
+}
