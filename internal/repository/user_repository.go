@@ -11,8 +11,9 @@ import (
 
 type UserRepository interface {
 	GetById(id uuid.UUID) (*models.User, error)
+	GetByEmail(email string) (*models.User, error)
 	Create(user *models.User) error
-	Login(email string, password string) (*models.User, string, error)
+	Login(email string, password string) (*models.User, error)
 }
 
 type userRepository struct{}
@@ -31,6 +32,17 @@ func (r *userRepository) GetById(id uuid.UUID) (*models.User, error) {
 	return &user, nil
 }
 
+func (r *userRepository) GetByEmail(email string) (*models.User, error) {
+	var user models.User
+	fmt.Println("repo", email)
+	if err := database.DB.First(&user, email).Error; err != nil {
+		fmt.Println("error", err)
+		return nil, err
+	}
+	fmt.Println("userss", user)
+	return &user, nil
+}
+
 func (r *userRepository) Create(user *models.User) error {
 
 	if database.DB == nil {
@@ -40,17 +52,17 @@ func (r *userRepository) Create(user *models.User) error {
 	return database.DB.Create(user).Error
 }
 
-func (r *userRepository) Login(email string, password string) (*models.User, string, error) {
+func (r *userRepository) Login(email string, password string) (*models.User, error) {
 
 	var user models.User
 
 	if err := database.DB.Where("email = ?", email).First(&user).Error; err != nil {
-		return nil, "", fmt.Errorf("user not found")
+		return nil, fmt.Errorf("user not found")
 	}
 
 	if !passwords.CompareHashPassword(password, user.Password) {
-		return nil, "", fmt.Errorf("password not match")
+		return nil, fmt.Errorf("password not match")
 	}
-	return &user, "success", nil
+	return &user, nil
 
 }

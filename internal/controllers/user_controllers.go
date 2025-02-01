@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,8 +9,14 @@ import (
 	"github.com/google/uuid"
 	"github.com/upeshchalise/go_blogs/internal/models"
 	"github.com/upeshchalise/go_blogs/internal/services"
+	"github.com/upeshchalise/go_blogs/pkg/utils/jwt"
 	passwords "github.com/upeshchalise/go_blogs/pkg/utils/password"
 )
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
 
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
@@ -53,10 +60,25 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func LoginUser(c *gin.Context, email string, password string) {
+func LoginUser(c *gin.Context) {
 
-	user, token, err := services.GetUserService().Login(email, password)
+	var req LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
+		return
+	}
+	fmt.Print(req.Email, req.Password)
+	user, err := services.GetUserService().GetByEmail(req.Email)
 	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := jwt.GenerateJwtToken("thisissecrettoken")
+
+	if err != nil {
+		log.Println("error while generating jwt token")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

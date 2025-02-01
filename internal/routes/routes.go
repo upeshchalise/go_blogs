@@ -16,6 +16,6 @@ func InitRoutes() *gin.Engine {
 
 	r.POST("/user", controllers.CreateUser)
 	r.GET("/user/:id", controllers.GetUser)
-
+	r.POST("/login", controllers.LoginUser)
 	return r
 }
