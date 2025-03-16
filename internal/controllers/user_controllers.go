@@ -18,6 +18,22 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type CreateUserRequest struct {
+	Email     string `json:"email" binding:"required,email"`
+	Password  string `json:"password" binding:"required"`
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
+}
+
+// GetUser godoc
+// @Tags Users
+// @Summary Get a user by ID
+// @Description Get a user by ID
+// @ID get-user-by-id
+// @Produce  json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.User
+// @Router /user/{id} [get]
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -38,6 +54,16 @@ func GetUser(c *gin.Context) {
 
 }
 
+// CreateUser godoc
+// @Tags Users
+// @Summary Create a new user
+// @Description Create a new user
+// @ID create-user
+// @Accept json
+// @Produce json
+// @Param user body CreateUserRequest true "User object"
+// @Success 200 {object} models.User
+// @Router /user [post]
 func CreateUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
