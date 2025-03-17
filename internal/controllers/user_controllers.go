@@ -86,6 +86,16 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// LoginUser godoc
+// @Tags Users
+// @Summary Login a user
+// @Description Login a user
+// @ID login-user
+// @Accept json
+// @Produce json
+// @Param user body LoginRequest true "User object"
+// @Success 200 {object} models.User
+// @Router /login [post]
 func LoginUser(c *gin.Context) {
 
 	var req LoginRequest
@@ -94,7 +104,7 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: " + err.Error()})
 		return
 	}
-	fmt.Print(req.Email, req.Password)
+	fmt.Println(req.Email, req.Password)
 	user, err := services.GetUserService().GetByEmail(req.Email)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -108,6 +118,7 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	user.Password = ""
 
 	c.JSON(http.StatusOK, gin.H{"user": user, "token": token})
 }

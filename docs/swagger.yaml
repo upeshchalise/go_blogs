@@ -16,6 +16,16 @@ definitions:
     - last_name
     - password
     type: object
+  controllers.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
   models.User:
     properties:
       created_at:
@@ -49,6 +59,29 @@ info:
   title: Go Blogs API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      operationId: login-user
+      parameters:
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Login a user
+      tags:
+      - Users
   /user:
     post:
       consumes:

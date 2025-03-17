@@ -10,7 +10,7 @@ type UserService interface {
 	GetById(id uuid.UUID) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	Create(user *models.User) error
-	Login(email string, password string) (*models.User, error)
+	// Login(email string, password string) (*models.User, error)
 }
 
 type userService struct {
@@ -35,6 +35,6 @@ func (s *userService) Create(user *models.User) error {
 	return s.repo.Create(user)
 }
 
-func (s *userService) Login(email string, password string) (*models.User, error) {
-	return s.repo.Login(email, password)
-}
+// func (s *userService) Login(email string, password string) (*models.User, error) {
+// 	return s.repo.Login(email, password)
+// }
