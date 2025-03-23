@@ -29,6 +29,6 @@ func main() {
 	database.Init()
 
 	r := routes.InitRoutes()
-
+	r.SetTrustedProxies([]string{})
 	r.Run(":8080")
 }
