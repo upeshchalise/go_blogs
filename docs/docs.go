@@ -23,6 +23,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/blog": {
+            "post": {
+                "description": "Create a new blog",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Create a new blog",
+                "parameters": [
+                    {
+                        "description": "Blog object",
+                        "name": "blog",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CreateBlogRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.GetBlogResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Login a user",
@@ -84,8 +118,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.User"
                         }
@@ -125,6 +159,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.CreateBlogRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "title",
+                "user_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -148,6 +201,32 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.GetBlogResponse": {
+            "type": "object",
+            "properties": {
+                "claps": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.LoginRequest": {
             "type": "object",
             "required": [
@@ -163,9 +242,103 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Blog": {
+            "type": "object",
+            "properties": {
+                "bookmarked_by": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.User"
+                    }
+                },
+                "claps": {
+                    "type": "integer"
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Comment"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Comment": {
+            "type": "object",
+            "properties": {
+                "blog": {
+                    "$ref": "#/definitions/models.Blog"
+                },
+                "blog_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
+                "blogs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Blog"
+                    }
+                },
+                "bookmarks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Blog"
+                    }
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Comment"
+                    }
+                },
                 "created_at": {
                     "type": "string"
                 },
