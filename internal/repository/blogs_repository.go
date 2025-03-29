@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/upeshchalise/go_blogs/internal/database"
 	"github.com/upeshchalise/go_blogs/internal/models"
+	"gorm.io/gorm"
 )
 
 type BlogsRepository interface {
@@ -32,7 +33,10 @@ func (r *blogsRepository) CreateBlog(blog *models.Blog) error {
 
 func (r *blogsRepository) GetBlogById(id uuid.UUID) (*models.Blog, error) {
 	var blog models.Blog
-	if err := database.DB.First(&blog, id).Error; err != nil {
+	if err := database.DB.
+		Preload("User", func(db *gorm.DB) *gorm.DB { return db.Select("id", "first_name", "last_name") }).
+		First(&blog, id).
+		Error; err != nil {
 
 		return nil, err
 	}

@@ -23,5 +23,6 @@ func InitRoutes() *gin.Engine {
 	apiV1.GET("/user/:id", controllers.GetUser)
 	apiV1.POST("/login", controllers.LoginUser)
 	apiV1.POST("/blog", controllers.CreateBlog)
+	apiV1.GET("/blog/:blogId", controllers.GetBlog)
 	return r
 }
