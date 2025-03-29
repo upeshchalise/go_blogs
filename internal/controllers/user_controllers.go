@@ -50,6 +50,7 @@ func GetUser(c *gin.Context) {
 			"error": err.Error()})
 		return
 	}
+	user.Password = ""
 	c.JSON(http.StatusOK, user)
 
 }
@@ -62,7 +63,7 @@ func GetUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user body CreateUserRequest true "User object"
-// @Success 200 {object} models.User
+// @Success 201 {object} models.User
 // @Router /user [post]
 func CreateUser(c *gin.Context) {
 	var user models.User

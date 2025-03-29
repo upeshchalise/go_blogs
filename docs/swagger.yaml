@@ -1,5 +1,18 @@
 basePath: /api/v1
 definitions:
+  controllers.CreateBlogRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    required:
+    - content
+    - title
+    - user_id
+    type: object
   controllers.CreateUserRequest:
     properties:
       email:
@@ -16,6 +29,25 @@ definitions:
     - last_name
     - password
     type: object
+  controllers.GetBlogResponse:
+    properties:
+      claps:
+        type: integer
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/controllers.User'
+      user_id:
+        type: string
+    type: object
   controllers.LoginRequest:
     properties:
       email:
@@ -26,8 +58,81 @@ definitions:
     - email
     - password
     type: object
+  controllers.User:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+    type: object
+  models.Blog:
+    properties:
+      bookmarked_by:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+      claps:
+        type: integer
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: string
+    type: object
+  models.Comment:
+    properties:
+      blog:
+        $ref: '#/definitions/models.Blog'
+      blog_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: string
+    type: object
   models.User:
     properties:
+      blogs:
+        items:
+          $ref: '#/definitions/models.Blog'
+        type: array
+      bookmarks:
+        items:
+          $ref: '#/definitions/models.Blog'
+        type: array
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
       created_at:
         type: string
       deleted_at:
@@ -59,6 +164,48 @@ info:
   title: Go Blogs API
   version: "1.0"
 paths:
+  /blog:
+    post:
+      consumes:
+      - application/json
+      description: Create a new blog
+      parameters:
+      - description: Blog object
+        in: body
+        name: blog
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateBlogRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create a new blog
+      tags:
+      - Blogs
+  /blog/{blogId}:
+    get:
+      description: Get a blog by ID
+      operationId: get-blog-by-id
+      parameters:
+      - description: Blog ID
+        in: path
+        name: blogId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.GetBlogResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a blog by ID
+      tags:
+      - Blogs
   /login:
     post:
       consumes:
@@ -98,8 +245,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/models.User'
       summary: Create a new user
