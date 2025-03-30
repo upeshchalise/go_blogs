@@ -43,6 +43,7 @@ type GetBlogResponse struct {
 // @Param blog body CreateBlogRequest true "Blog object"
 // @Success 201
 // @Router /blog [post]
+// @Security BearerAuth
 func CreateBlog(c *gin.Context) {
 
 	var req CreateBlogRequest

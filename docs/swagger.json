@@ -23,6 +23,11 @@
     "paths": {
         "/blog": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new blog",
                 "consumes": [
                     "application/json"
@@ -159,6 +164,11 @@
         },
         "/user/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a user by ID",
                 "produces": [
                     "application/json"
@@ -415,6 +425,14 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Add token in \"Bearer {token}“ format.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

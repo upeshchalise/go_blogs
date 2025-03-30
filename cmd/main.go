@@ -21,7 +21,10 @@ import (
 // @host localhost:8080
 // @BasePath /api/v1
 // @schemes http https
-
+// @securityDefinitions.ApiKey BearerAuth
+// @in header
+// @name Authorization
+// @description Add token in "Bearer {token}“ format.
 func main() {
 	config.Load()
 	logger.Init()

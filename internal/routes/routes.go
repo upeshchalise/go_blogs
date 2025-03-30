@@ -5,6 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/upeshchalise/go_blogs/internal/controllers"
+	"github.com/upeshchalise/go_blogs/internal/middleware"
 )
 
 func InitRoutes() *gin.Engine {
@@ -20,9 +21,9 @@ func InitRoutes() *gin.Engine {
 	})
 
 	apiV1.POST("/user", controllers.CreateUser)
-	apiV1.GET("/user/:id", controllers.GetUser)
+	apiV1.GET("/user/:id", middleware.VerifyJWT(controllers.GetUser))
 	apiV1.POST("/login", controllers.LoginUser)
-	apiV1.POST("/blog", controllers.CreateBlog)
-	apiV1.GET("/blog/:blogId", controllers.GetBlog)
+	apiV1.POST("/blog", middleware.VerifyJWT(controllers.CreateBlog))
+	apiV1.GET("/blog/:blogId", middleware.VerifyJWT(controllers.GetBlog))
 	return r
 }

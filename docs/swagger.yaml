@@ -181,6 +181,8 @@ paths:
       responses:
         "201":
           description: Created
+      security:
+      - BearerAuth: []
       summary: Create a new blog
       tags:
       - Blogs
@@ -269,10 +271,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.User'
+      security:
+      - BearerAuth: []
       summary: Get a user by ID
       tags:
       - Users
 schemes:
 - http
 - https
+securityDefinitions:
+  BearerAuth:
+    description: Add token in "Bearer {token}“ format.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

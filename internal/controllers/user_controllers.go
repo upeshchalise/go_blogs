@@ -34,6 +34,7 @@ type CreateUserRequest struct {
 // @Param id path string true "User ID"
 // @Success 200 {object} models.User
 // @Router /user/{id} [get]
+// @Security BearerAuth
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -112,7 +113,7 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	token, err := jwt.GenerateJwtToken("thisissecrettoken")
+	token, err := jwt.GenerateJwtToken(user.ID.String(), "thisissecrettoken")
 
 	if err != nil {
 		log.Println("error while generating jwt token")

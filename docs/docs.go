@@ -25,6 +25,11 @@ const docTemplate = `{
     "paths": {
         "/blog": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new blog",
                 "consumes": [
                     "application/json"
@@ -161,6 +166,11 @@ const docTemplate = `{
         },
         "/user/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a user by ID",
                 "produces": [
                     "application/json"
@@ -417,6 +427,14 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Add token in \"Bearer {token}“ format.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
