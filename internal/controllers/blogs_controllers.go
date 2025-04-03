@@ -113,3 +113,20 @@ func GetBlog(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, blog)
 }
+
+// GetAllBlogs godoc
+// @Tags Blogs
+// @Summary Retrieve all blogs
+// @Description Retrieve a list of all blogs
+// @Produce json
+// @Success 200 {array} models.Blog
+// @Router /blogs [get]
+func GetAllBlogs(c *gin.Context) {
+	blogs, err := services.GetBlogService().GetAllBlogs()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, blogs)
+}

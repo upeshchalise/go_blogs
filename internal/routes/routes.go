@@ -11,6 +11,7 @@ import (
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
 
+	r.Use(middleware.CorsMiddleware())
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	apiV1 := r.Group("/api/v1")
@@ -24,6 +25,7 @@ func InitRoutes() *gin.Engine {
 	apiV1.GET("/user/:id", middleware.VerifyJWT(controllers.GetUser))
 	apiV1.POST("/login", controllers.LoginUser)
 	apiV1.POST("/blog", middleware.VerifyJWT(controllers.CreateBlog))
+	apiV1.GET("/blogs", controllers.GetAllBlogs)
 	apiV1.GET("/blog/:blogId", middleware.VerifyJWT(controllers.GetBlog))
 	return r
 }

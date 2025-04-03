@@ -208,6 +208,21 @@ paths:
       summary: Get a blog by ID
       tags:
       - Blogs
+  /blogs:
+    get:
+      description: Retrieve a list of all blogs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Blog'
+            type: array
+      summary: Retrieve all blogs
+      tags:
+      - Blogs
   /login:
     post:
       consumes:
