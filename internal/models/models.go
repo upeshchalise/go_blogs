@@ -24,18 +24,21 @@ type User struct {
 }
 
 type Blog struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	UserID    uuid.UUID `json:"user_id"`
-	User      User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"user"`
-	Claps     int       `json:"claps"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	DeletedAt time.Time `gorm:"index" json:"deleted_at"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	BannerImage string    `json:"banner"`
+	Category    string    `json:"category"`
+	UserID      uuid.UUID `json:"user_id"`
+	User        User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"user"`
+	Claps       int       `json:"claps"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	DeletedAt   time.Time `gorm:"index" json:"deleted_at"`
 
-	BookMarkedBy []User    `gorm:"many2many:book_marks;joinForeignKey:BlogID;joinReferences:UserID" json:"bookmarked_by"`
-	Comments     []Comment `gorm:"foreignKey:BlogID" json:"comments"`
+	BookMarkedBy []User     `gorm:"many2many:book_marks;joinForeignKey:BlogID;joinReferences:UserID" json:"bookmarked_by"`
+	Comments     []Comment  `gorm:"foreignKey:BlogID" json:"comments"`
+	Categories   []Category `gorm:"many2many:blog_categories;joinForeignKey:BlogID;joinReferences:CategoryID" json:"categories"`
 }
 
 type BookMark struct {
@@ -59,6 +62,15 @@ type Comment struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt time.Time `gorm:"index" json:"deleted_at"`
+}
+
+type Category struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `gorm:"index" json:"deleted_at"`
+	Blogs     []Blog    `gorm:"foreignKey:Category;constraint:OnDelete:CASCADE;" json:"blogs"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
