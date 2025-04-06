@@ -9,9 +9,10 @@ import (
 
 type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
+	FirstName string    `gorm:"not null" json:"first_name"`
+	LastName  string    `gorm:"not null" json:"last_name"`
 	Email     string    `gorm:"uniqueIndex; not null" json:"email"`
+	Image     string    `json:"image"`
 	Password  string    `gorm:"not null" json:"password"` //Exclude from JSON response
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -25,10 +26,10 @@ type User struct {
 
 type Blog struct {
 	ID          uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Title       string    `json:"title"`
-	Content     string    `json:"content"`
+	Title       string    `gorm:"not null" json:"title"`
+	Content     string    `gorm:"not null" json:"content"`
 	BannerImage string    `json:"banner"`
-	Category    string    `json:"category"`
+	Category    string    `gorm:"not null" json:"category"`
 	UserID      uuid.UUID `json:"user_id"`
 	User        User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"user"`
 	Claps       int       `json:"claps"`
