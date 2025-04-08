@@ -29,7 +29,6 @@ type Blog struct {
 	Title       string    `gorm:"not null" json:"title"`
 	Content     string    `gorm:"not null" json:"content"`
 	BannerImage string    `json:"banner"`
-	Category    string    `gorm:"not null" json:"category"`
 	UserID      uuid.UUID `json:"user_id"`
 	User        User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;" json:"user"`
 	Claps       int       `json:"claps"`
@@ -71,7 +70,6 @@ type Category struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt time.Time `gorm:"index" json:"deleted_at"`
-	Blogs     []Blog    `gorm:"foreignKey:Category;constraint:OnDelete:CASCADE;" json:"blogs"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

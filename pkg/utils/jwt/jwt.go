@@ -6,7 +6,12 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func GenerateJwtToken(userId, secretKey string) (string, error) {
+type JwtTokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token`
+}
+
+func GenerateJwtToken(userId, secretKey string) (JwtTokens, error) {
 
 	claims := jwt.MapClaims{
 		"sub":    userId,
@@ -16,12 +21,23 @@ func GenerateJwtToken(userId, secretKey string) (string, error) {
 		"iat":    time.Now().Unix(),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(secretKey))
-	if err != nil {
-		return "", err
+	refreshClaims := jwt.MapClaims{
+		"sub":    userId,
+		"iss":    "go_blogs",
+		"userId": userId,
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
+		"iat":    time.Now().Unix(),
 	}
-	return tokenString, nil
+
+	access_token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	refresh_token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	tokenString, err := access_token.SignedString([]byte(secretKey))
+	refreshTokenString, refreshErr := refresh_token.SignedString([]byte(secretKey))
+	if err != nil || refreshErr != nil {
+		return JwtTokens{}, err
+	}
+
+	return JwtTokens{AccessToken: tokenString, RefreshToken: refreshTokenString}, nil
 }
 func ValidateJwtToken(tokenString, secretKey string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
