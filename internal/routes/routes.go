@@ -26,6 +26,6 @@ func InitRoutes() *gin.Engine {
 	apiV1.POST("/login", controllers.LoginUser)
 	apiV1.POST("/blog", middleware.VerifyJWT(controllers.CreateBlog))
 	apiV1.GET("/blogs", controllers.GetAllBlogs)
-	apiV1.GET("/blog/:blogId", middleware.VerifyJWT(controllers.GetBlog))
+	apiV1.GET("/blog/:blogId", controllers.GetBlog)
 	return r
 }

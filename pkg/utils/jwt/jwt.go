@@ -8,7 +8,7 @@ import (
 
 type JwtTokens struct {
 	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func GenerateJwtToken(userId, secretKey string) (JwtTokens, error) {
