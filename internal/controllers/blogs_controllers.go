@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/upeshchalise/go_blogs/internal/database"
 	"github.com/upeshchalise/go_blogs/internal/models"
 	"github.com/upeshchalise/go_blogs/internal/services"
 )
@@ -18,9 +19,10 @@ type User struct {
 }
 
 type CreateBlogRequest struct {
-	Title   string `json:"title" binding:"required"`
-	Content string `json:"content" binding:"required"`
-	UserID  string `json:"user_id" binding:"required"`
+	Title      string            `json:"title" binding:"required"`
+	Content    string            `json:"content" binding:"required"`
+	UserID     string            `json:"user_id" binding:"required"`
+	Categories []models.Category `json:"categories" binding:"required"`
 }
 
 type GetBlogResponse struct {
@@ -70,10 +72,19 @@ func CreateBlog(c *gin.Context) {
 		return
 	}
 
+	var categories []models.Category
+	for _, cat := range req.Categories {
+		var existing models.Category
+		if err := database.DB.First(&existing, "id = ?", cat.ID).Error; err == nil {
+			categories = append(categories, existing)
+		}
+	}
+
 	blog := &models.Blog{
-		Title:   req.Title,
-		Content: req.Content,
-		UserID:  userID,
+		Title:      req.Title,
+		Content:    req.Content,
+		UserID:     userID,
+		Categories: categories,
 	}
 
 	if err := services.GetBlogService().CreateBlog(blog); err != nil {
