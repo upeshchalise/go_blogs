@@ -35,6 +35,7 @@ func (r *blogsRepository) GetBlogById(id uuid.UUID) (*models.Blog, error) {
 	var blog models.Blog
 	if err := database.DB.
 		Preload("User", func(db *gorm.DB) *gorm.DB { return db.Select("id", "first_name", "last_name") }).
+		Preload("Categories", func(db *gorm.DB) *gorm.DB { return db.Select("id", "name") }).
 		First(&blog, id).
 		Error; err != nil {
 
@@ -46,7 +47,9 @@ func (r *blogsRepository) GetBlogById(id uuid.UUID) (*models.Blog, error) {
 
 func (r *blogsRepository) GetAllBlogs() ([]models.Blog, error) {
 	var blogs []models.Blog
-	if err := database.DB.Find(&blogs).Error; err != nil {
+	if err := database.DB.
+		Preload("Categories", func(db *gorm.DB) *gorm.DB { return db.Select("id", "name") }).
+		Find(&blogs).Error; err != nil {
 		return nil, err
 	}
 
