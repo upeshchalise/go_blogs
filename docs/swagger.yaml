@@ -2,6 +2,10 @@ basePath: /api/v1
 definitions:
   controllers.CreateBlogRequest:
     properties:
+      categories:
+        items:
+          $ref: '#/definitions/models.Category'
+        type: array
       content:
         type: string
       title:
@@ -9,9 +13,17 @@ definitions:
       user_id:
         type: string
     required:
+    - categories
     - content
     - title
     - user_id
+    type: object
+  controllers.CreateCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
     type: object
   controllers.CreateUserRequest:
     properties:
@@ -71,9 +83,15 @@ definitions:
     type: object
   models.Blog:
     properties:
+      banner:
+        type: string
       bookmarked_by:
         items:
           $ref: '#/definitions/models.User'
+        type: array
+      categories:
+        items:
+          $ref: '#/definitions/models.Category'
         type: array
       claps:
         type: integer
@@ -96,6 +114,19 @@ definitions:
       user:
         $ref: '#/definitions/models.User'
       user_id:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
         type: string
     type: object
   models.Comment:
@@ -142,6 +173,8 @@ definitions:
       first_name:
         type: string
       id:
+        type: string
+      image:
         type: string
       last_name:
         type: string
@@ -203,8 +236,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/controllers.GetBlogResponse'
-      security:
-      - BearerAuth: []
       summary: Get a blog by ID
       tags:
       - Blogs
@@ -223,6 +254,72 @@ paths:
       summary: Retrieve all blogs
       tags:
       - Blogs
+  /blogs/category/{categoryId}:
+    get:
+      description: Retrieve a list of blogs by category
+      parameters:
+      - description: Category ID
+        in: path
+        name: categoryId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Blog'
+            type: array
+      summary: Retrieve blogs by category
+      tags:
+      - Blogs
+  /categories:
+    get:
+      description: Retrieve a list of all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+      summary: Retrieve all categories
+      tags:
+      - Categories
+  /category/user/{userId}:
+    post:
+      consumes:
+      - application/json
+      description: Create a new category
+      operationId: create-category
+      parameters:
+      - description: Category object
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateCategoryRequest'
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Category'
+      security:
+      - BearerAuth: []
+      summary: Create a new category
+      tags:
+      - Categories
   /login:
     post:
       consumes:

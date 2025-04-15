@@ -11,6 +11,7 @@ type BlogService interface {
 	GetBlogById(id uuid.UUID) (*models.Blog, error)
 	GetAllBlogs() ([]models.Blog, error)
 	GetBlogsByUserId(userId uuid.UUID) ([]models.Blog, error)
+	GetBlogsByCategory(categoryId uuid.UUID) ([]models.Blog, error)
 }
 
 type blogService struct {
@@ -37,4 +38,8 @@ func (s *blogService) GetAllBlogs() ([]models.Blog, error) {
 
 func (s *blogService) GetBlogsByUserId(userId uuid.UUID) ([]models.Blog, error) {
 	return s.repo.GetBlogsByUserId(userId)
+}
+
+func (s *blogService) GetBlogsByCategory(categoryId uuid.UUID) ([]models.Blog, error) {
+	return s.repo.GetBlogsByCategory(categoryId)
 }

@@ -61,11 +61,6 @@ const docTemplate = `{
         },
         "/blog/{blogId}": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Get a blog by ID",
                 "produces": [
                     "application/json"
@@ -112,6 +107,108 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/models.Blog"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/blogs/category/{categoryId}": {
+            "get": {
+                "description": "Retrieve a list of blogs by category",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Retrieve blogs by category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Blog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "description": "Retrieve a list of all categories",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Retrieve all categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Category"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category/user/{userId}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create a new category",
+                "operationId": "create-category",
+                "parameters": [
+                    {
+                        "description": "Category object",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CreateCategoryRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
                         }
                     }
                 }
@@ -227,11 +324,18 @@ const docTemplate = `{
         "controllers.CreateBlogRequest": {
             "type": "object",
             "required": [
+                "categories",
                 "content",
                 "title",
                 "user_id"
             ],
             "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Category"
+                    }
+                },
                 "content": {
                     "type": "string"
                 },
@@ -239,6 +343,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.CreateCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }
@@ -330,10 +445,19 @@ const docTemplate = `{
         "models.Blog": {
             "type": "object",
             "properties": {
+                "banner": {
+                    "type": "string"
+                },
                 "bookmarked_by": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.User"
+                    }
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Category"
                     }
                 },
                 "claps": {
@@ -367,6 +491,26 @@ const docTemplate = `{
                     "$ref": "#/definitions/models.User"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Category": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -437,6 +581,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "image": {
                     "type": "string"
                 },
                 "last_name": {

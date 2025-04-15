@@ -105,7 +105,6 @@ func CreateBlog(c *gin.Context) {
 // @Param blogId path string true "Blog ID"
 // @Success 200 {object} GetBlogResponse
 // @Router /blog/{blogId} [get]
-// @Security BearerAuth
 func GetBlog(c *gin.Context) {
 	id := c.Param("blogId")
 
@@ -139,5 +138,34 @@ func GetAllBlogs(c *gin.Context) {
 		return
 	}
 
+	c.JSON(http.StatusOK, blogs)
+}
+
+// GetBlogsByCategory godoc
+// @Tags Blogs
+// @Summary Retrieve blogs by category
+// @Description Retrieve a list of blogs by category
+// @Produce json
+// @Param categoryId path string true "Category ID"
+// @Success 200 {array} models.Blog
+// @Router /blogs/category/{categoryId} [get]
+func GetBlogsByCategory(c *gin.Context) {
+	category := c.Param("categoryId")
+
+	uuidId, err := uuid.Parse(category)
+
+	if err != nil {
+		log.Println("Invalid UUID format:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID format"})
+		// Handle the error appropriately (maybe return a 400 Bad Request response)
+	}
+
+	blogs, err := services.GetBlogService().GetBlogsByCategory(uuidId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, blogs)
 }

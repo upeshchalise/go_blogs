@@ -27,5 +27,8 @@ func InitRoutes() *gin.Engine {
 	apiV1.POST("/blog", middleware.VerifyJWT(controllers.CreateBlog))
 	apiV1.GET("/blogs", controllers.GetAllBlogs)
 	apiV1.GET("/blog/:blogId", controllers.GetBlog)
+	apiV1.GET("/blogs/category/:categoryId", controllers.GetBlogsByCategory)
+	apiV1.POST("/category/user/:userId", middleware.VerifyJWT(controllers.CreateCategory))
+	apiV1.GET("/categories", controllers.GetCategories)
 	return r
 }

@@ -92,3 +92,10 @@ func (bm *BookMark) BeforeCreate(tx *gorm.DB) (err error) {
 	}
 	return
 }
+
+func (c *Category) BeforeCreate(tx *gorm.DB) (err error) {
+	if c.ID == uuid.Nil {
+		c.ID = uuid.New()
+	}
+	return
+}

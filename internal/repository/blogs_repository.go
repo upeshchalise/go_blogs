@@ -14,6 +14,7 @@ type BlogsRepository interface {
 	GetBlogById(id uuid.UUID) (*models.Blog, error)
 	GetAllBlogs() ([]models.Blog, error)
 	GetBlogsByUserId(userId uuid.UUID) ([]models.Blog, error)
+	GetBlogsByCategory(categoryId uuid.UUID) ([]models.Blog, error)
 }
 
 type blogsRepository struct{}
@@ -59,6 +60,20 @@ func (r *blogsRepository) GetAllBlogs() ([]models.Blog, error) {
 func (r *blogsRepository) GetBlogsByUserId(userId uuid.UUID) ([]models.Blog, error) {
 	var blogs []models.Blog
 	if err := database.DB.Where("user_id = ?", userId).Find(&blogs).Error; err != nil {
+		return nil, err
+	}
+
+	return blogs, nil
+}
+
+func (r *blogsRepository) GetBlogsByCategory(categoryId uuid.UUID) ([]models.Blog, error) {
+	var blogs []models.Blog
+
+	err := database.DB.Joins("JOIN blog_categories ON blog_categories.blog_id = blogs.id").
+		Where("blog_categories.category_id = ?", categoryId).
+		Preload("User", func(db *gorm.DB) *gorm.DB { return db.Select("id", "first_name", "last_name") }).Preload("Categories").Find(&blogs).Error
+
+	if err != nil {
 		return nil, err
 	}
 
