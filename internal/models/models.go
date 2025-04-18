@@ -7,6 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type UserRoles string
+
+const (
+	Admin   UserRoles = "admin"
+	Regular UserRoles = "user"
+)
+
 type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	FirstName string    `gorm:"not null" json:"first_name"`
@@ -14,6 +21,7 @@ type User struct {
 	Email     string    `gorm:"uniqueIndex; not null" json:"email"`
 	Image     string    `json:"image"`
 	Password  string    `gorm:"not null" json:"password"` //Exclude from JSON response
+	UserType  UserRoles `json:"user_type"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt time.Time `gorm:"index" json:"deleted_at"`

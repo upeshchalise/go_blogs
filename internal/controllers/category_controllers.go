@@ -51,6 +51,11 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
+	if user.UserType != models.UserRoles("admin") {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
+		return
+	}
+
 	category := models.Category{
 		Name: request.Name,
 	}

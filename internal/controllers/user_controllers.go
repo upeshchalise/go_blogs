@@ -79,13 +79,14 @@ func CreateUser(c *gin.Context) {
 	}
 
 	user.Password = hashedPassword
+	user.UserType = models.UserRoles("user")
 
 	if err := services.GetUserService().Create(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	user.Password = ""
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusCreated, gin.H{})
 }
 
 // LoginUser godoc
